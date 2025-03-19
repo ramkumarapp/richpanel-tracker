@@ -1,0 +1,1369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Richpanel Customer Onboarding Tracker</title>
+  <style>
+    /* Modern styling */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    }
+    :root {
+      --primary-color: #3b82f6;
+      --primary-hover: #2563eb;
+      --green-color: #10b981;
+      --green-hover: #059669;
+      --red-color: #ef4444;
+      --red-hover: #dc2626;
+      --gray-50: #f9fafb;
+      --gray-100: #f3f4f6;
+      --gray-200: #e5e7eb;
+      --gray-300: #d1d5db;
+      --gray-400: #9ca3af;
+      --gray-500: #6b7280;
+      --gray-600: #4b5563;
+      --gray-700: #374151;
+      --gray-800: #1f2937;
+      --gray-900: #111827;
+    }
+    html {
+      font-size: 16px;
+    }
+    body {
+      margin: 0;
+      padding: 20px;
+      background-color: var(--gray-50);
+      line-height: 1.5;
+      color: var(--gray-800);
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    h1, h2, h3, h4 {
+      margin-top: 0;
+      color: var(--gray-900);
+    }
+    .btn {
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 0.375rem;
+      cursor: pointer;
+      font-size: 0.875rem;
+      font-weight: 500;
+      margin-left: 0.5rem;
+      transition: background-color 0.15s ease-in-out;
+    }
+    .btn:hover {
+      background-color: var(--primary-hover);
+    }
+    .btn-green {
+      background-color: var(--green-color);
+    }
+    .btn-green:hover {
+      background-color: var(--green-hover);
+    }
+    .btn-red {
+      background-color: var(--red-color);
+    }
+    .btn-red:hover {
+      background-color: var(--red-hover);
+    }
+    .table-container {
+      background-color: white;
+      border-radius: 0.5rem;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      overflow-x: auto;
+      margin-bottom: 1.5rem;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 0.75rem 1rem;
+      text-align: left;
+      border-bottom: 1px solid var(--gray-200);
+    }
+    th {
+      background-color: var(--gray-50);
+      font-weight: 600;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      color: var(--gray-600);
+      letter-spacing: 0.05em;
+    }
+    tr:hover {
+      background-color: var(--gray-50);
+    }
+    .customer-form {
+      background-color: white;
+      padding: 1.5rem;
+      border-radius: 0.5rem;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      margin-bottom: 1.5rem;
+      display: none;
+    }
+    .form-group {
+      margin-bottom: 1rem;
+    }
+    .form-row {
+      display: flex;
+      flex-wrap: wrap;
+      margin: 0 -0.5rem;
+    }
+    .form-col {
+      flex: 1;
+      min-width: 200px;
+      padding: 0 0.5rem;
+      margin-bottom: 1rem;
+    }
+    label {
+      display: block;
+      margin-bottom: 0.375rem;
+      font-weight: 500;
+      font-size: 0.875rem;
+      color: var(--gray-700);
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 0.5rem 0.75rem;
+      border: 1px solid var(--gray-300);
+      border-radius: 0.375rem;
+      font-size: 0.875rem;
+      color: var(--gray-800);
+      transition: border-color 0.15s ease-in-out;
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+    input[readonly] {
+      background-color: var(--gray-100);
+      cursor: not-allowed;
+    }
+    .task-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+    .task-card {
+      background-color: var(--gray-50);
+      border-radius: 0.375rem;
+      padding: 0.75rem;
+      border: 1px solid var(--gray-200);
+      position: relative;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .task-card:hover {
+      border-color: var(--gray-300);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+    .task-card.checked {
+      background-color: rgba(59, 130, 246, 0.08);
+      border-color: var(--primary-color);
+    }
+    .task-card.checked:after {
+      content: "✓";
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      color: var(--primary-color);
+      font-weight: 600;
+    }
+    .task-label {
+      font-size: 0.8125rem;
+      color: var(--gray-700);
+      font-weight: 500;
+    }
+    .task-hidden-input {
+      display: none;
+    }
+    .actions {
+      display: flex;
+      gap: 0.375rem;
+    }
+    .status-badge {
+      display: inline-block;
+      padding: 0.25rem 0.5rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .status-free-trial {
+      background-color: #fef3c7;
+      color: #92400e;
+    }
+    .status-1st-call {
+      background-color: #dbeafe;
+      color: #1e40af;
+    }
+    .status-2nd-call {
+      background-color: #e0e7ff;
+      color: #4338ca;
+    }
+    .status-3rd-call {
+      background-color: #d1fae5;
+      color: #065f46;
+    }
+    .status-live {
+      background-color: #dcfce7;
+      color: #15803d;
+    }
+    .progress-bar {
+      height: 0.5rem;
+      background-color: var(--gray-200);
+      border-radius: 9999px;
+      overflow: hidden;
+      margin-top: 0.25rem;
+    }
+    .progress-fill {
+      height: 100%;
+      background-color: var(--primary-color);
+    }
+    .days-normal {
+      color: var(--gray-800);
+    }
+    .days-warning {
+      color: #d97706;
+      font-weight: 600;
+    }
+    .days-overdue {
+      color: var(--red-color);
+      font-weight: 600;
+    }
+    .notes-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-content {
+      background-color: white;
+      border-radius: 0.5rem;
+      max-width: 600px;
+      width: 90%;
+      max-height: 80vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    }
+    .modal-header {
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--gray-200);
+      font-weight: 600;
+    }
+    .modal-body {
+      padding: 1.25rem;
+      overflow-y: auto;
+      flex-grow: 1;
+    }
+    .modal-footer {
+      padding: 1rem 1.25rem;
+      border-top: 1px solid var(--gray-200);
+      display: flex;
+      justify-content: flex-end;
+    }
+    .hidden {
+      display: none;
+    }
+    .report-container {
+      display: none;
+      background-color: white;
+      border-radius: 0.5rem;
+      padding: 1.5rem;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+    .report-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    .stat-card {
+      background-color: var(--gray-50);
+      padding: 1rem;
+      border-radius: 0.5rem;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    }
+    .stat-title {
+      font-size: 0.875rem;
+      color: var(--gray-600);
+      margin-bottom: 0.25rem;
+    }
+    .stat-value {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--gray-900);
+    }
+    .customer-list {
+      margin-top: 1.25rem;
+    }
+    .status-pill {
+      display: inline-block;
+      padding: 0.125rem 0.5rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      background-color: var(--gray-100);
+      margin-right: 0.375rem;
+    }
+    .filters {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+      background-color: white;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+      min-width: 200px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Richpanel Customer Onboarding Tracker</h1>
+      <div>
+        <button id="reportBtn" class="btn btn-green">Report</button>
+        <button id="addCustomerBtn" class="btn">Add Customer</button>
+      </div>
+    </div>
+
+    <!-- Customer Form -->
+    <div id="customerForm" class="customer-form">
+      <h2 id="formTitle">Add New Customer</h2>
+      
+      <div class="form-row">
+        <div class="form-col">
+          <div class="form-group">
+            <label for="customerName">Customer Name *</label>
+            <input type="text" id="customerName" required>
+          </div>
+        </div>
+        <div class="form-col">
+          <div class="form-group">
+            <label for="status">Onboarding Status *</label>
+            <select id="status" required>
+              <option value="">Select Status</option>
+              <option value="Free Trial Started">Free Trial Started</option>
+              <option value="1st Call - Basic Setup">1st Call - Basic Setup</option>
+              <option value="2nd Call - Self-service & Automations">2nd Call - Self-service & Automations</option>
+              <option value="3rd Call - Agent Training and Go Live">3rd Call - Agent Training and Go Live</option>
+              <option value="Live">Live</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      
+      <div class="form-row">
+        <div class="form-col">
+          <div class="form-group">
+            <label for="plan">Plan *</label>
+            <select id="plan" required>
+              <option value="">Select Plan</option>
+              <option value="Helpdesk Pro">Helpdesk Pro</option>
+              <option value="Helpdesk Pro Max">Helpdesk Pro Max</option>
+              <option value="Enterprise">Enterprise</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-col">
+          <div class="form-group">
+            <label for="addOns">Add-ons</label>
+            <select id="addOns">
+              <option value="">Select Add-on</option>
+              <option value="Self-service portal">Self-service portal</option>
+              <option value="Automation success kit">Automation success kit</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      
+      <div class="form-row">
+        <div class="form-col">
+          <div class="form-group">
+            <label for="mrr">MRR ($) *</label>
+            <input type="number" id="mrr" required>
+          </div>
+        </div>
+        <div class="form-col">
+          <div class="form-group">
+            <label for="agents">Number of Agents *</label>
+            <input type="number" id="agents" required>
+          </div>
+        </div>
+      </div>
+      
+      <div class="form-row">
+        <div class="form-col">
+          <div class="form-group">
+            <label for="switchedFrom">Switched From</label>
+            <select id="switchedFrom">
+              <option value="">Select</option>
+              <option value="Gorgias">Gorgias</option>
+              <option value="Zendesk">Zendesk</option>
+              <option value="Kustomer">Kustomer</option>
+              <option value="Help Scout">Help Scout</option>
+              <option value="re:amaze">re:amaze</option>
+              <option value="Others">Others</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-col">
+          <div class="form-group">
+            <label for="csm">CSM *</label>
+            <input type="text" id="csm" required>
+          </div>
+        </div>
+      </div>
+      
+      <div class="form-row">
+        <div class="form-col">
+          <div class="form-group">
+            <label for="ae">AE</label>
+            <input type="text" id="ae">
+          </div>
+        </div>
+        <div class="form-col">
+          <div class="form-group">
+            <label for="startDate">Onboarding Start Date *</label>
+            <input type="date" id="startDate" required>
+          </div>
+        </div>
+      </div>
+      
+      <div class="form-row">
+        <div class="form-col">
+          <div class="form-group">
+            <label for="goLiveDate">Go-Live Date (auto-calculated)</label>
+            <input type="date" id="goLiveDate" readonly>
+          </div>
+        </div>
+        <div class="form-col">
+          <div class="form-group">
+            <label for="daysLapsed">Days Lapsed in 14-day Window</label>
+            <input type="text" id="daysLapsed" readonly>
+          </div>
+        </div>
+      </div>
+      
+      <h3>Tasks</h3>
+      <div id="taskContainer" class="task-grid">
+        <div class="task-card" data-task="cartIntegration">
+          <input type="checkbox" id="cartIntegration" class="task-hidden-input">
+          <div class="task-label">Cart Integration</div>
+        </div>
+        <div class="task-card" data-task="dataImport">
+          <input type="checkbox" id="dataImport" class="task-hidden-input">
+          <div class="task-label">Data Import</div>
+        </div>
+        <div class="task-card" data-task="trainSidekickAI">
+          <input type="checkbox" id="trainSidekickAI" class="task-hidden-input">
+          <div class="task-label">Train Sidekick AI</div>
+        </div>
+        <div class="task-card" data-task="brandColors">
+          <input type="checkbox" id="brandColors" class="task-hidden-input">
+          <div class="task-label">Brand Colors</div>
+        </div>
+        <div class="task-card" data-task="aiAnalysis">
+          <input type="checkbox" id="aiAnalysis" class="task-hidden-input">
+          <div class="task-label">AI Analysis</div>
+        </div>
+        <div class="task-card" data-task="selfServiceFlows">
+          <input type="checkbox" id="selfServiceFlows" class="task-hidden-input">
+          <div class="task-label">Self-service Flows</div>
+        </div>
+        <div class="task-card" data-task="automationRules">
+          <input type="checkbox" id="automationRules" class="task-hidden-input">
+          <div class="task-label">Automation Rules</div>
+        </div>
+        <div class="task-card" data-task="socialMediaModerator">
+          <input type="checkbox" id="socialMediaModerator" class="task-hidden-input">
+          <div class="task-label">Social Media Moderator</div>
+        </div>
+        <div class="task-card" data-task="prepareDeck">
+          <input type="checkbox" id="prepareDeck" class="task-hidden-input">
+          <div class="task-label">Prepare Deck</div>
+        </div>
+        <div class="task-card" data-task="agentTraining">
+          <input type="checkbox" id="agentTraining" class="task-hidden-input">
+          <div class="task-label">Agent Training</div>
+        </div>
+        <div class="task-card" data-task="connectChannels">
+          <input type="checkbox" id="connectChannels" class="task-hidden-input">
+          <div class="task-label">Connect Channels</div>
+        </div>
+        <div class="task-card" data-task="goLive">
+          <input type="checkbox" id="goLive" class="task-hidden-input">
+          <div class="task-label">Go Live</div>
+        </div>
+        <div class="task-card" data-task="checkInCall">
+          <input type="checkbox" id="checkInCall" class="task-hidden-input">
+          <div class="task-label">Check-in Call with Head of CX</div>
+        </div>
+        <div class="task-card" data-task="reachOutToCEO">
+          <input type="checkbox" id="reachOutToCEO" class="task-hidden-input">
+          <div class="task-label">Reach Out to CEO with Stats</div>
+        </div>
+      </div>
+      
+      <div style="margin-top: 1.5rem;">
+        <button id="saveCustomerBtn" class="btn">Add Customer</button>
+        <button id="cancelFormBtn" class="btn" style="background-color: var(--gray-500);">Cancel</button>
+      </div>
+    </div>
+    
+    <!-- Filters -->
+    <div class="filters">
+      <div class="filter-group">
+        <label for="statusFilter">Onboarding Status</label>
+        <select id="statusFilter">
+          <option value="">All Statuses</option>
+          <option value="Free Trial Started">Free Trial Started</option>
+          <option value="1st Call - Basic Setup">1st Call - Basic Setup</option>
+          <option value="2nd Call - Self-service & Automations">2nd Call - Self-service & Automations</option>
+          <option value="3rd Call - Agent Training and Go Live">3rd Call - Agent Training and Go Live</option>
+          <option value="Live">Live</option>
+        </select>
+      </div>
+    </div>
+    
+    <!-- Customer Table -->
+    <div id="mainContent">
+      <div class="table-container">
+        <table id="customerTable">
+          <thead>
+            <tr>
+              <th>Customer</th>
+              <th>Status & Plan</th>
+              <th>Timeline</th>
+              <th>Task Progress</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="customerTableBody">
+            <!-- Customer rows will be added here -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+    
+    <!-- Report View -->
+    <div id="reportView" class="report-container">
+      <div class="report-header">
+        <h2>Onboarding Report</h2>
+        <button id="backToTrackerBtn" class="btn">Back to Tracker</button>
+      </div>
+      
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-title">Total Accounts</div>
+          <div id="totalAccounts" class="stat-value">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-title">In Onboarding</div>
+          <div id="inOnboarding" class="stat-value">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-title">Going Live This Week</div>
+          <div id="goingLiveThisWeek" class="stat-value">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-title">Completed</div>
+          <div id="completedOnboarding" class="stat-value">0</div>
+        </div>
+      </div>
+      
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-title">Average Time to Go-Live</div>
+          <div id="avgTimeToGoLive" class="stat-value">0 days</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-title">Overdue Accounts</div>
+          <div id="overdueAccounts" class="stat-value">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-title">Total MRR</div>
+          <div id="totalMRR" class="stat-value">$0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-title">Total Agents</div>
+          <div id="totalAgents" class="stat-value">0</div>
+        </div>
+      </div>
+      
+      <h3>Status Distribution</h3>
+      <div class="customer-list" id="statusDistribution">
+        <!-- Status distribution will be added here -->
+      </div>
+      
+      <h3>Customers In Onboarding</h3>
+      <div class="customer-list" id="inOnboardingList">
+        <!-- Customers in onboarding will be added here -->
+      </div>
+      
+      <h3>Customers Going Live This Week</h3>
+      <div class="customer-list" id="goingLiveThisWeekList">
+        <!-- Customers going live this week will be added here -->
+      </div>
+      
+      <h3>Overdue Customers</h3>
+      <div class="customer-list" id="overdueCustomersList">
+        <!-- Overdue customers will be added here -->
+      </div>
+    </div>
+  </div>
+  
+  <!-- Notes Modal -->
+  <div id="notesModal" class="notes-modal">
+    <div class="modal-content">
+      <div class="modal-header" id="notesModalTitle">Customer Notes</div>
+      <div class="modal-body">
+        <textarea id="notesText" rows="10" placeholder="Add your notes here..."></textarea>
+      </div>
+      <div class="modal-footer">
+        <button id="saveNotesBtn" class="btn">Save & Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Data storage
+    let customers = [];
+    let notes = {};
+    let editCustomerIndex = null;
+    
+    // Initialize
+    document.addEventListener('DOMContentLoaded', function() {
+      loadData();
+      renderCustomerTable();
+      setupEventListeners();
+      setupTaskCards();
+      
+      // Set default dates for new customers
+      document.getElementById('startDate').addEventListener('change', function() {
+        calculateGoLiveDate();
+        updateDaysLapsed();
+      });
+    });
+    
+    // Set up task cards
+    function setupTaskCards() {
+      const taskCards = document.querySelectorAll('.task-card');
+      
+      taskCards.forEach(card => {
+        card.addEventListener('click', function() {
+          const taskId = this.getAttribute('data-task');
+          const checkbox = document.getElementById(taskId);
+          
+          checkbox.checked = !checkbox.checked;
+          
+          if (checkbox.checked) {
+            this.classList.add('checked');
+          } else {
+            this.classList.remove('checked');
+          }
+        });
+      });
+    }
+    
+    // Update task cards when editing
+    function updateTaskCards() {
+      const taskCards = document.querySelectorAll('.task-card');
+      
+      taskCards.forEach(card => {
+        const taskId = card.getAttribute('data-task');
+        const checkbox = document.getElementById(taskId);
+        
+        if (checkbox.checked) {
+          card.classList.add('checked');
+        } else {
+          card.classList.remove('checked');
+        }
+      });
+    }
+    
+    // Load data from localStorage
+    function loadData() {
+      const savedCustomers = localStorage.getItem('simple-onboarding-customers');
+      const savedNotes = localStorage.getItem('simple-onboarding-notes');
+      
+      if (savedCustomers) {
+        customers = JSON.parse(savedCustomers);
+      }
+      
+      if (savedNotes) {
+        notes = JSON.parse(savedNotes);
+      }
+    }
+    
+    // Save data to localStorage
+    function saveData() {
+      localStorage.setItem('simple-onboarding-customers', JSON.stringify(customers));
+      localStorage.setItem('simple-onboarding-notes', JSON.stringify(notes));
+    }
+    
+    // Set up event listeners
+    function setupEventListeners() {
+      // Buttons
+      document.getElementById('addCustomerBtn').addEventListener('click', showAddCustomerForm);
+      document.getElementById('reportBtn').addEventListener('click', showReportView);
+      document.getElementById('backToTrackerBtn').addEventListener('click', showMainContent);
+      document.getElementById('saveCustomerBtn').addEventListener('click', saveCustomer);
+      document.getElementById('cancelFormBtn').addEventListener('click', hideCustomerForm);
+      document.getElementById('saveNotesBtn').addEventListener('click', saveNotes);
+      
+      // Filters
+      document.getElementById('statusFilter').addEventListener('change', applyFilters);
+      
+      // Close modal when clicking outside
+      window.addEventListener('click', function(event) {
+        if (event.target === document.getElementById('notesModal')) {
+          document.getElementById('notesModal').style.display = 'none';
+        }
+      });
+    }
+    
+    // Show add customer form
+    function showAddCustomerForm() {
+      const customerForm = document.getElementById('customerForm');
+      const formTitle = document.getElementById('formTitle');
+      const saveCustomerBtn = document.getElementById('saveCustomerBtn');
+      
+      customerForm.style.display = 'block';
+      formTitle.textContent = 'Add New Customer';
+      saveCustomerBtn.textContent = 'Add Customer';
+      
+      // Reset form
+      document.getElementById('customerName').value = '';
+      document.getElementById('status').value = '';
+      document.getElementById('plan').value = '';
+      document.getElementById('addOns').value = '';
+      document.getElementById('mrr').value = '';
+      document.getElementById('agents').value = '';
+      document.getElementById('switchedFrom').value = '';
+      document.getElementById('csm').value = '';
+      document.getElementById('ae').value = '';
+      document.getElementById('startDate').value = '';
+      document.getElementById('goLiveDate').value = '';
+      document.getElementById('daysLapsed').value = '';
+      
+      // Reset checkboxes
+      const checkboxes = document.querySelectorAll('.task-hidden-input');
+      checkboxes.forEach(checkbox => {
+        checkbox.checked = false;
+      });
+      
+      // Reset task cards
+      const taskCards = document.querySelectorAll('.task-card');
+      taskCards.forEach(card => {
+        card.classList.remove('checked');
+      });
+      
+      editCustomerIndex = null;
+    }
+    
+    // Hide customer form
+    function hideCustomerForm() {
+      document.getElementById('customerForm').style.display = 'none';
+      editCustomerIndex = null;
+    }
+    
+    // Save customer
+    function saveCustomer() {
+      // Get form values
+      const customerName = document.getElementById('customerName').value;
+      const status = document.getElementById('status').value;
+      const plan = document.getElementById('plan').value;
+      const addOns = document.getElementById('addOns').value;
+      const mrr = document.getElementById('mrr').value;
+      const agents = document.getElementById('agents').value;
+      const switchedFrom = document.getElementById('switchedFrom').value;
+      const csm = document.getElementById('csm').value;
+      const ae = document.getElementById('ae').value;
+      const startDate = document.getElementById('startDate').value;
+      const goLiveDate = document.getElementById('goLiveDate').value;
+      const daysLapsed = document.getElementById('daysLapsed').value;
+      
+      // Validate required fields
+      if (!customerName || !status || !plan || !mrr || !agents || !csm || !startDate) {
+        alert('Please fill in all required fields');
+        return;
+      }
+      
+      // Get task values
+      const tasks = {
+        cartIntegration: document.getElementById('cartIntegration').checked,
+        dataImport: document.getElementById('dataImport').checked,
+        trainSidekickAI: document.getElementById('trainSidekickAI').checked,
+        brandColors: document.getElementById('brandColors').checked,
+        aiAnalysis: document.getElementById('aiAnalysis').checked,
+        selfServiceFlows: document.getElementById('selfServiceFlows').checked,
+        automationRules: document.getElementById('automationRules').checked,
+        socialMediaModerator: document.getElementById('socialMediaModerator').checked,
+        prepareDeck: document.getElementById('prepareDeck').checked,
+        agentTraining: document.getElementById('agentTraining').checked,
+        connectChannels: document.getElementById('connectChannels').checked,
+        goLive: document.getElementById('goLive').checked,
+        checkInCall: document.getElementById('checkInCall').checked,
+        reachOutToCEO: document.getElementById('reachOutToCEO').checked
+      };
+      
+      // Create customer object
+      const customer = {
+        customerName,
+        status,
+        plan,
+        addOns,
+        mrr: parseFloat(mrr),
+        agents: parseInt(agents),
+        switchedFrom,
+        csm,
+        ae,
+        startDate,
+        goLiveDate,
+        daysLapsed,
+        tasks
+      };
+      
+      // Update or add customer
+      if (editCustomerIndex !== null) {
+        customers[editCustomerIndex] = customer;
+      } else {
+        customers.push(customer);
+      }
+      
+      // Save data and update table
+      saveData();
+      renderCustomerTable();
+      hideCustomerForm();
+    }
+    
+    // Calculate Go-Live Date (14 business days after start date)
+    function calculateGoLiveDate() {
+      const startDateInput = document.getElementById('startDate');
+      const goLiveDateInput = document.getElementById('goLiveDate');
+      
+      if (startDateInput.value) {
+        const startDate = new Date(startDateInput.value);
+        const goLiveDate = addBusinessDays(startDate, 14);
+        goLiveDateInput.value = goLiveDate.toISOString().split('T')[0];
+      } else {
+        goLiveDateInput.value = '';
+      }
+    }
+    
+    // Update Days Lapsed field (progress toward the 14-day window)
+    function updateDaysLapsed() {
+      const startDateInput = document.getElementById('startDate');
+      const daysLapsedInput = document.getElementById('daysLapsed');
+      
+      if (startDateInput.value) {
+        const startDate = new Date(startDateInput.value);
+        const today = new Date();
+        
+        // Calculate business days elapsed
+        const businessDays = getBusinessDays(startDate, today);
+        
+        // Show only days within the 14-day window
+        const daysInWindow = Math.min(businessDays, 14);
+        daysLapsedInput.value = `${daysInWindow} of 14 days`;
+      } else {
+        daysLapsedInput.value = '';
+      }
+    }
+    
+    // Add business days to a date (skipping weekends)
+    function addBusinessDays(date, days) {
+      let result = new Date(date);
+      let addedDays = 0;
+      
+      while (addedDays < days) {
+        result.setDate(result.getDate() + 1);
+        if (result.getDay() !== 0 && result.getDay() !== 6) {
+          // Not a weekend
+          addedDays++;
+        }
+      }
+      
+      return result;
+    }
+    
+    // Calculate business days between two dates
+    function getBusinessDays(startDate, endDate) {
+      let count = 0;
+      let currentDate = new Date(startDate);
+      const end = new Date(endDate);
+      
+      while (currentDate <= end) {
+        const dayOfWeek = currentDate.getDay();
+        if (dayOfWeek !== 0 && dayOfWeek !== 6) {
+          count++;
+        }
+        currentDate.setDate(currentDate.getDate() + 1);
+      }
+      
+      return count;
+    }
+    
+    // Calculate task completion percentage
+    function calculateTaskCompletion(tasks) {
+      if (!tasks) return 0;
+      
+      const totalTasks = Object.keys(tasks).length;
+      if (totalTasks === 0) return 0;
+      
+      const completedTasks = Object.values(tasks).filter(value => value === true).length;
+      return Math.round((completedTasks / totalTasks) * 100);
+    }
+    
+    // Render customer table
+    function renderCustomerTable() {
+      const tableBody = document.getElementById('customerTableBody');
+      tableBody.innerHTML = '';
+      
+      // Get filter values
+      const statusFilter = document.getElementById('statusFilter').value;
+      
+      // Filter customers
+      const filteredCustomers = customers.filter(customer => {
+        return (!statusFilter || customer.status === statusFilter);
+      });
+      
+      if (filteredCustomers.length === 0) {
+        const emptyRow = document.createElement('tr');
+        emptyRow.innerHTML = `
+          <td colspan="5" style="text-align: center;">No customers found</td>
+        `;
+        tableBody.appendChild(emptyRow);
+        return;
+      }
+      
+      // Sort customers by go-live date
+      filteredCustomers.sort((a, b) => {
+        if (!a.goLiveDate) return 1;
+        if (!b.goLiveDate) return -1;
+        return new Date(a.goLiveDate) - new Date(b.goLiveDate);
+      });
+      
+      // Add customer rows
+      filteredCustomers.forEach((customer, index) => {
+        const originalIndex = customers.indexOf(customer);
+        const row = document.createElement('tr');
+        
+        // Calculate days
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const startDate = new Date(customer.startDate);
+        const goLiveDate = new Date(customer.goLiveDate);
+        
+        const daysToGoLive = customer.goLiveDate ? getBusinessDays(today, goLiveDate) : '';
+        
+        // Parse days lapsed from the format "X of 14 days"
+        let daysLapsed = '';
+        if (customer.daysLapsed) {
+          const match = customer.daysLapsed.match(/(\d+) of 14 days/);
+          if (match) {
+            daysLapsed = match[1];
+          }
+        }
+        // If not found in the format, calculate it
+        if (!daysLapsed) {
+          const calculatedDays = Math.min(getBusinessDays(startDate, today), 14);
+          daysLapsed = calculatedDays.toString();
+        }
+        
+        // Calculate task completion
+        const taskCompletion = calculateTaskCompletion(customer.tasks);
+        
+        // Determine timeline status class
+        let timelineStatusClass = 'days-normal';
+        if (daysToGoLive < 0) {
+          timelineStatusClass = 'days-overdue';
+        } else if (daysToGoLive >= 0 && daysToGoLive <= 5) {
+          timelineStatusClass = 'days-warning';
+        }
+        
+        // Determine status badge class
+        let statusBadgeClass = 'status-badge ';
+        if (customer.status && customer.status.includes('Free Trial')) {
+          statusBadgeClass += 'status-free-trial';
+        } else if (customer.status && customer.status.includes('1st Call')) {
+          statusBadgeClass += 'status-1st-call';
+        } else if (customer.status && customer.status.includes('2nd Call')) {
+          statusBadgeClass += 'status-2nd-call';
+        } else if (customer.status && customer.status.includes('3rd Call')) {
+          statusBadgeClass += 'status-3rd-call';
+        } else if (customer.status && customer.status.includes('Live')) {
+          statusBadgeClass += 'status-live';
+        }
+        
+        row.innerHTML = `
+          <td>
+            <div style="font-weight: bold;">${customer.customerName}</div>
+            <div style="font-size: 13px; color: var(--gray-600);">Agents: ${customer.agents}</div>
+          </td>
+          <td>
+            <div class="${statusBadgeClass}">${customer.status}</div>
+            <div style="font-size: 13px; margin-top: 5px;">Plan: ${customer.plan}</div>
+            <div style="font-size: 13px;">MRR: $${customer.mrr}</div>
+            ${customer.addOns ? `<div style="font-size: 13px; margin-top: 5px;">Add-on: ${customer.addOns}</div>` : ''}
+            <div style="font-size: 13px; margin-top: 5px;">From: ${customer.switchedFrom || 'N/A'}</div>
+          </td>
+          <td>
+            <div>Start: ${formatDate(customer.startDate)}</div>
+            <div>Go-Live: ${formatDate(customer.goLiveDate)}</div>
+            <div class="${timelineStatusClass}" style="margin-top: 5px;">
+              ${getTimelineStatus(daysToGoLive)}
+            </div>
+            <div style="font-size: 13px; color: var(--gray-600);">Days in Window: ${daysLapsed} of 14</div>
+          </td>
+          <td>
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: ${taskCompletion}%"></div>
+            </div>
+            <div style="font-size: 13px; margin-top: 5px;">${taskCompletion}% complete</div>
+          </td>
+          <td class="actions">
+            <button onclick="openNotesModal(${originalIndex})" class="btn" style="background-color: #8b5cf6;">Notes</button>
+            <button onclick="editCustomer(${originalIndex})" class="btn">Edit</button>
+            <button onclick="deleteCustomer(${originalIndex})" class="btn btn-red">Delete</button>
+          </td>
+        `;
+        
+        tableBody.appendChild(row);
+      });
+    }
+    
+    // Get timeline status text
+    function getTimelineStatus(daysToGoLive) {
+      if (daysToGoLive === '') return '';
+      
+      if (daysToGoLive < 0) {
+        return `${Math.abs(daysToGoLive)} days overdue`;
+      } else if (daysToGoLive === 0) {
+        return 'Due today!';
+      } else {
+        return `${daysToGoLive} days to go-live`;
+      }
+    }
+    
+    // Format date for display
+    function formatDate(dateString) {
+      if (!dateString) return 'N/A';
+      
+      const date = new Date(dateString);
+      return date.toLocaleDateString();
+    }
+    
+    // Edit customer
+    function editCustomer(index) {
+      const customer = customers[index];
+      const customerForm = document.getElementById('customerForm');
+      const formTitle = document.getElementById('formTitle');
+      const saveCustomerBtn = document.getElementById('saveCustomerBtn');
+      
+      editCustomerIndex = index;
+      
+      // Set form values
+      document.getElementById('customerName').value = customer.customerName || '';
+      document.getElementById('status').value = customer.status || '';
+      document.getElementById('plan').value = customer.plan || '';
+      document.getElementById('addOns').value = customer.addOns || '';
+      document.getElementById('mrr').value = customer.mrr || '';
+      document.getElementById('agents').value = customer.agents || '';
+      document.getElementById('switchedFrom').value = customer.switchedFrom || '';
+      document.getElementById('csm').value = customer.csm || '';
+      document.getElementById('ae').value = customer.ae || '';
+      document.getElementById('startDate').value = customer.startDate || '';
+      document.getElementById('goLiveDate').value = customer.goLiveDate || '';
+      document.getElementById('daysLapsed').value = customer.daysLapsed || '';
+      
+      // Set task values
+      if (customer.tasks) {
+        Object.keys(customer.tasks).forEach(taskId => {
+          const checkbox = document.getElementById(taskId);
+          if (checkbox) {
+            checkbox.checked = customer.tasks[taskId];
+          }
+        });
+      }
+      
+      // Update task cards
+      updateTaskCards();
+      
+      // Update form display
+      formTitle.textContent = 'Edit Customer';
+      saveCustomerBtn.textContent = 'Save Changes';
+      customerForm.style.display = 'block';
+    }
+    
+    // Delete customer
+    function deleteCustomer(index) {
+      if (confirm('Are you sure you want to delete this customer?')) {
+        customers.splice(index, 1);
+        saveData();
+        renderCustomerTable();
+      }
+    }
+    
+    // Open notes modal
+    function openNotesModal(index) {
+      const customer = customers[index];
+      document.getElementById('notesModalTitle').textContent = `Notes for ${customer.customerName}`;
+      document.getElementById('notesText').value = notes[customer.customerName] || '';
+      document.getElementById('notesModal').style.display = 'flex';
+      document.getElementById('notesModal').setAttribute('data-customer', customer.customerName);
+    }
+    
+    // Save notes
+    function saveNotes() {
+      const notesModal = document.getElementById('notesModal');
+      const customerName = notesModal.getAttribute('data-customer');
+      notes[customerName] = document.getElementById('notesText').value;
+      saveData();
+      notesModal.style.display = 'none';
+    }
+    
+    // Apply filters
+    function applyFilters() {
+      renderCustomerTable();
+    }
+    
+    // Show report view
+    function showReportView() {
+      document.getElementById('mainContent').style.display = 'none';
+      document.getElementById('reportView').style.display = 'block';
+      generateReport();
+    }
+    
+    // Show main content
+    function showMainContent() {
+      document.getElementById('mainContent').style.display = 'block';
+      document.getElementById('reportView').style.display = 'none';
+    }
+    
+    // Generate report
+    function generateReport() {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      
+      // Calculate stats
+      const totalCustomers = customers.length;
+      const inOnboarding = customers.filter(c => 
+        c.status !== 'Live' && (!c.tasks || !c.tasks.goLive)
+      ).length;
+      
+      const goingLiveThisWeek = customers.filter(c => {
+        if (!c.goLiveDate) return false;
+        const goLiveDate = new Date(c.goLiveDate);
+        const businessDays = getBusinessDays(today, goLiveDate);
+        return businessDays >= 0 && businessDays <= 5;
+      }).length;
+      
+      const completedOnboarding = customers.filter(c => 
+        c.status === 'Live' || (c.tasks && c.tasks.goLive)
+      ).length;
+      
+      const overdue = customers.filter(c => {
+        if (!c.goLiveDate) return false;
+        const goLiveDate = new Date(c.goLiveDate);
+        return goLiveDate < today && (!c.tasks || !c.tasks.goLive);
+      }).length;
+      
+      const totalMRR = customers.reduce((sum, c) => sum + (parseFloat(c.mrr) || 0), 0);
+      const totalAgents = customers.reduce((sum, c) => sum + (parseInt(c.agents) || 0), 0);
+      
+      // Calculate average time to go-live
+      let totalDaysToGoLive = 0;
+      let completedCustomers = 0;
+      
+      customers.forEach(customer => {
+        if (customer.startDate && customer.tasks && customer.tasks.goLive) {
+          const startDate = new Date(customer.startDate);
+          const endDate = new Date(customer.goLiveDate);
+          const days = getBusinessDays(startDate, endDate);
+          totalDaysToGoLive += days;
+          completedCustomers++;
+        }
+      });
+      
+      const avgTimeToGoLive = completedCustomers > 0 ? Math.round(totalDaysToGoLive / completedCustomers) : 0;
+      
+      // Update stats display
+      document.getElementById('totalAccounts').textContent = totalCustomers;
+      document.getElementById('inOnboarding').textContent = inOnboarding;
+      document.getElementById('goingLiveThisWeek').textContent = goingLiveThisWeek;
+      document.getElementById('completedOnboarding').textContent = completedOnboarding;
+      document.getElementById('overdueAccounts').textContent = overdue;
+      document.getElementById('totalMRR').textContent = `$${totalMRR.toFixed(2)}`;
+      document.getElementById('totalAgents').textContent = totalAgents;
+      document.getElementById('avgTimeToGoLive').textContent = `${avgTimeToGoLive} days`;
+      
+      // Create status distribution
+      const statusDistribution = document.getElementById('statusDistribution');
+      statusDistribution.innerHTML = '';
+      
+      const statusCounts = {};
+      customers.forEach(customer => {
+        if (customer.status) {
+          statusCounts[customer.status] = (statusCounts[customer.status] || 0) + 1;
+        }
+      });
+      
+      Object.keys(statusCounts).forEach(status => {
+        const statusItem = document.createElement('div');
+        statusItem.style.margin = '5px 0';
+        statusItem.innerHTML = `
+          <span class="status-pill">${statusCounts[status]}</span>
+          <span>${status}</span>
+        `;
+        statusDistribution.appendChild(statusItem);
+      });
+      
+      // Create customers in onboarding list
+      const inOnboardingList = document.getElementById('inOnboardingList');
+      inOnboardingList.innerHTML = '';
+      
+      const inOnboardingCustomers = customers.filter(c => 
+        c.status !== 'Live' && (!c.tasks || !c.tasks.goLive)
+      );
+      
+      if (inOnboardingCustomers.length === 0) {
+        inOnboardingList.innerHTML = '<div>No customers in onboarding</div>';
+      } else {
+        inOnboardingCustomers.forEach(customer => {
+          const completionPercentage = calculateTaskCompletion(customer.tasks);
+          const customerItem = document.createElement('div');
+          customerItem.style.margin = '10px 0';
+          
+          // Parse days lapsed
+          let daysLapsed = '';
+          if (customer.daysLapsed) {
+            const match = customer.daysLapsed.match(/(\d+) of 14 days/);
+            if (match) {
+              daysLapsed = match[1];
+            }
+          }
+          if (!daysLapsed && customer.startDate) {
+            daysLapsed = Math.min(getBusinessDays(new Date(customer.startDate), today), 14).toString();
+          }
+          
+          customerItem.innerHTML = `
+            <div style="display: flex; justify-content: space-between;">
+              <span style="font-weight: bold;">${customer.customerName}</span>
+              <span>Completion: ${completionPercentage}%</span>
+            </div>
+            <div style="font-size: 13px; color: var(--gray-600);">
+              <span>Status: ${customer.status}</span> | 
+              <span>Days in Window: ${daysLapsed} of 14</span> |
+              <span>CSM: ${customer.csm}</span>
+            </div>
+            <div class="progress-bar" style="margin-top: 5px;">
+              <div class="progress-fill" style="width: ${completionPercentage}%"></div>
+            </div>
+          `;
+          inOnboardingList.appendChild(customerItem);
+        });
+      }
+      
+      // Create going live this week list
+      const goingLiveThisWeekList = document.getElementById('goingLiveThisWeekList');
+      goingLiveThisWeekList.innerHTML = '';
+      
+      const goingLiveCustomers = customers.filter(c => {
+        if (!c.goLiveDate) return false;
+        const goLiveDate = new Date(c.goLiveDate);
+        const businessDays = getBusinessDays(today, goLiveDate);
+        return businessDays >= 0 && businessDays <= 5;
+      });
+      
+      if (goingLiveCustomers.length === 0) {
+        goingLiveThisWeekList.innerHTML = '<div>No customers going live this week</div>';
+      } else {
+        goingLiveCustomers.forEach(customer => {
+          const customerItem = document.createElement('div');
+          customerItem.style.margin = '5px 0';
+          customerItem.innerHTML = `
+            <div style="display: flex; justify-content: space-between;">
+              <span style="font-weight: bold;">${customer.customerName}</span>
+              <span>Go-Live: ${formatDate(customer.goLiveDate)}</span>
+            </div>
+            <div style="font-size: 13px; color: var(--gray-600);">
+              <span>Status: ${customer.status}</span> | 
+              <span>MRR: $${customer.mrr}</span> | 
+              <span>Agents: ${customer.agents}</span>
+            </div>
+          `;
+          goingLiveThisWeekList.appendChild(customerItem);
+        });
+      }
+      
+      // Create overdue customers list
+      const overdueCustomersList = document.getElementById('overdueCustomersList');
+      overdueCustomersList.innerHTML = '';
+      
+      const overdueCustomers = customers.filter(c => {
+        if (!c.goLiveDate) return false;
+        const goLiveDate = new Date(c.goLiveDate);
+        return goLiveDate < today && (!c.tasks || !c.tasks.goLive);
+      });
+      
+      if (overdueCustomers.length === 0) {
+        overdueCustomersList.innerHTML = '<div>No overdue customers</div>';
+      } else {
+        overdueCustomers.forEach(customer => {
+          const customerItem = document.createElement('div');
+          customerItem.style.margin = '5px 0';
+          
+          const goLiveDate = new Date(customer.goLiveDate);
+          const businessDaysOverdue = getBusinessDays(goLiveDate, today);
+          
+          customerItem.innerHTML = `
+            <div style="display: flex; justify-content: space-between;">
+              <span style="font-weight: bold;">${customer.customerName}</span>
+              <span style="color: var(--red-color);">${businessDaysOverdue} days overdue</span>
+            </div>
+            <div style="font-size: 13px; color: var(--gray-600);">
+              <span>Status: ${customer.status}</span> | 
+              <span>CSM: ${customer.csm}</span>
+            </div>
+          `;
+          overdueCustomersList.appendChild(customerItem);
+        });
+      }
+    }
+  </script>
+</body>
+</html>
